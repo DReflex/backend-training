@@ -1,0 +1,25 @@
+{
+  "name": "database-training",
+  "version": "1.0.0",
+  "description": "creating login user, social media login and edit user after verification",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js"
+  },
+  "keywords": [
+    "mongoDB",
+    "node.js",
+    "login",
+    "social-media-login",
+    "express.js"
+  ],
+  "author": "R & M",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mongoose": "^5.2.6",
+    "mongoose-long": "^0.2.1"
+  }
+}
