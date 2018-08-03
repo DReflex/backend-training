@@ -18,6 +18,9 @@ mongoose.Promise = global.Promise;
 
 app.use(bodyParser.json());
 
+app.use('/api', require('./routes/userAPI'));
+
+
 //init app
 //build part of the react app
 //uncoment this after npm build
