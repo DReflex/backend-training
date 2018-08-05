@@ -22,6 +22,6 @@ const UserSchema = new Schema ({
 });
 const User = mongoose.model('user', UserSchema);
 module.exports = User;
-User.create({username: "reflex", password: 'Minion', email:"this is email"}, function(err, doc) {
-    // At this point the jobs collection is created.
-});
+// User.create({username: "reflex", password: 'Minion', email:"this is email"}, function(err, doc) {
+//      At this point the jobs collection is created.
+// });
