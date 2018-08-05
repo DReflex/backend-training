@@ -10,32 +10,25 @@ router.get('/user', function(req, res, next){
   }).catch(next);
 });
 //get by id
-router.get('/user/:id', function(req, res, next){
+router.get('/user/:username', function(req, res, next){
   //use validator to make sure that id is of correct form
-  var validator = mongoose.Types.ObjectId.isValid(req.params.id);
-  if(validator){
-    User.findOne({"_id":req.params.id})
-    .then(function(response, err){
-      if(response.length === 0){
-        res.status(404);
-        res.send("none");
-      }
-      else{
-        console.log(response);
+    User.findOne({"username":req.params.username})
+    .then(function(response){
+       if(!response){
+         res.status(404);
+         res.send("none");
+       }
+       else{
         res.send(response)
       }
     }).catch(next)
-    }else{
-      res.status(422);
-      res.send("invalid id form")
-    }
   })
 // create
   router.post('/user', function(req, res, next){
     var checkUsername = validator("username", req.body.username)
     var checkEmail = validator("email", req.body.email)
       if(checkUsername && checkEmail){
-        User.create(req.body).then(function(user, err){
+        User.create(req.body).then(function(user){
           res.send(user)
         }).catch(next)
       }else{
