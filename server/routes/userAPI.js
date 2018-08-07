@@ -2,6 +2,7 @@ const express= require('express');
 const router = express.Router();
 const mongoose = require('mongoose')
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 
 //get all
 router.get('/user', function(req, res, next){
@@ -28,9 +29,25 @@ router.get('/user/:username', function(req, res, next){
     var checkUsername = validator("username", req.body.username)
     var checkEmail = validator("email", req.body.email)
       if(checkUsername && checkEmail){
-        User.create(req.body).then(function(user){
-          res.send(user)
-        }).catch(next)
+        let newUser = {
+          username:req.body.username,
+          email: req.body.email,
+          password: req.body.password
+        }
+        console.log("all tests passed");
+        bcrypt.genSalt(10, function(err, salt) {
+            console.log("we are in salt");
+            bcrypt.hash(newUser.password, salt, function(err,hash){
+              if(err){
+                console.log(err);
+              }
+              newUser.password = hash;
+              User.create(newUser).then(function(Product){
+                res.send(Product);
+              }).catch(next)
+            })
+          })
+
       }else{
         res.status(422);
         res.send("invalid input")

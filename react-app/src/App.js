@@ -46,7 +46,7 @@ class App extends Component {
         headers: {
             'Content-Type': 'application/json'
         }
-      }).then(res => (res.status === 422)?console.log("cant create"):console.log(res.json()) )
+      }).then(res => (res.status === 422)?console.log("cant create", res):console.log(res.json()) )
     }
   }
   render() {
