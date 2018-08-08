@@ -2,12 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
+const passport = require('passport')
+const config = require('./config/database')
 
 
 const app =express();
 app.set('port', (process.env.PORT || 4000));
 
-var promise = mongoose.connect( 'mongodb://localhost:27017/login',{
+var promise = mongoose.connect( config.database,{
   useNewUrlParser: true,
 })
 mongoose.connection.on('open', function(err, doc){
@@ -16,10 +18,17 @@ mongoose.connection.on('open', function(err, doc){
 
 mongoose.Promise = global.Promise;
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/api', require('./routes/userAPI'));
 
+//passport config
+ require('./config/passport')(passport)
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/api', require('./routes/userAPI'));
 
 //init app
 //build part of the react app

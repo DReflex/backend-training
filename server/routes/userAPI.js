@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose')
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const passport = require('passport')
 
 //get all
 router.get('/user', function(req, res, next){
@@ -53,6 +54,15 @@ router.get('/user/:username', function(req, res, next){
         res.send("invalid input")
       }
     })
+//login user here
+  router.post('/login', function(req, res, next){
+    passport.authenticate('local', function (err, user) {
+      console.log("this is something",user);
+        req.logIn(user, function() {
+            res.status(err ? 500 : 200).send(err ? err : user);
+        });
+    })(req, res, next);
+  });
 
 //update
     router.put('/user/:id', function(req, res, next){
@@ -80,8 +90,7 @@ router.get('/user/:username', function(req, res, next){
 function validator(param, value){
   //param = username
   // value = "value"
-  // ckeck if this param is valid form email or username
-  // then check if its in db
+  // use regex ta validate email and to make sure username is of correct form
   if(param === "username"){
     // validate
     var returnUsername = Boolean
@@ -94,8 +103,8 @@ function validator(param, value){
 
     return regex
   }
-  // stack overflow
 }
+// stack overflow
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());

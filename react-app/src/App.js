@@ -16,15 +16,17 @@ class App extends Component {
   handleLogin(){
     const username = document.getElementById("login-username").value
     const password = document.getElementById("login-password").value
-    fetch(`/api/user/${username}`)
-    .then(res => (res.status === 404)? null : res.json())
-    .then((res) =>{
-      if(res){
-        (res.password === password)? console.log("you are now logged in"):console.log("invalid password")
-      }else{
-        console.log("invalid username");
+    fetch(`/api/login`,{
+      method:"POST",
+      body:JSON.stringify({
+        username: username,
+        password:password
+      }),
+      headers: {
+          'Content-Type': 'application/json'
       }
-    })
+    }).then(res => console.log(res.json()) )
+
   }
   handleSignUp(){
     console.log("this is signup ");
