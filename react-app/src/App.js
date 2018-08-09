@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Login, SignUp} from './login/login'
 import './App.css';
 
 class App extends Component {
@@ -13,6 +14,7 @@ class App extends Component {
       login: true
     })
   }
+  // login returns false or user in res,json()
   handleLogin(){
     const username = document.getElementById("login-username").value
     const password = document.getElementById("login-password").value
@@ -30,14 +32,15 @@ class App extends Component {
   }
   handleSignUp(){
     console.log("this is signup ");
-    const username = document.getElementById("signUp-username").value
-    const password = document.getElementById("signUp-password").value
-    const confirm = document.getElementById("signUp-confirm").value
+    const username = document.getElementById("signUp-username").value.toString();
+    const password = document.getElementById("signUp-password").value.toString();
+    const confirm = document.getElementById("signUp-confirm").value.toString();
     const email = document.getElementById("signUp-email").value
     if(password !== confirm){
       console.log("passwords not match");
     }
     else{
+      console.log(password);
       fetch(`/api/user`,{
         method:"POST",
         body: JSON.stringify({
@@ -67,25 +70,3 @@ class App extends Component {
 }
 
 export default App;
-
-function Login (props){
-  return(
-    <div>
-      <input id="login-username" placeholder="username" />
-      <input id="login-password" placeholder="password" />
-      <button onClick={props.handleLogin} >Submit</button>
-    </div>
-  )
-}
-function SignUp (props){
-  return(
-    <div >
-      <input id="signUp-username" placeholder="username" />
-      <input id="signUp-password" placeholder="password" />
-        <input id="signUp-confirm" placeholder="confirm password" />
-        <input id="signUp-email" placeholder="email" />
-      <button onClick={props.handleSignUp} >Submit</button>
-
-    </div>
-  )
-}
