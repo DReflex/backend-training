@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Login, SignUp} from './login/login'
+import { Login, SignUp} from './login/login';
+import User from './user/user'
 import './App.css';
 
 class App extends Component {
@@ -31,7 +32,6 @@ class App extends Component {
 
   }
   handleSignUp(){
-    console.log("this is signup ");
     const username = document.getElementById("signUp-username").value.toString();
     const password = document.getElementById("signUp-password").value.toString();
     const confirm = document.getElementById("signUp-confirm").value.toString();
@@ -54,6 +54,29 @@ class App extends Component {
       }).then(res => (res.status === 422)?console.log("cant create", res):console.log(res.json()) )
     }
   }
+  handleChangeUser(){
+    const username = document.getElementById("change-username").value.toString();
+    const password = document.getElementById("change-old-password").value.toString();
+    const new_password = document.getElementById("change-new-password").value.toString();
+    const confirm_password = document.getElementById("change-confirm-password").value
+    //make sure its not empty object
+    if(new_password !== confirm_password){
+      console.log("passwords not match");
+    }
+    else{
+      fetch(`/api/change`,{
+        method:"PUT",
+        body: JSON.stringify({
+            username: username,
+            password: password,
+            new_password: new_password
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+      }).then(res => (res.status === 422)?console.log("cant create", res):console.log(res.json()) )
+    }
+  }
   render() {
     return (
       <div className="App">
@@ -64,6 +87,8 @@ class App extends Component {
           })
         }
           >{this.state.login? "Sign up": "Login"}</button>
+        <h1> change password below</h1>
+        <User handleChangeUser={this.handleChangeUser} />
       </div>
     );
   }

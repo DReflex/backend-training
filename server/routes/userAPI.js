@@ -57,12 +57,43 @@ router.get('/user/:username', function(req, res, next){
 //login user here
   router.post('/login', function(req, res, next){
     passport.authenticate('local', function (err, user) {
-      console.log("this is something",user);
         req.logIn(user, function() {
             res.status(err ? 500 : 200).send(err ? err : user);
         });
     })(req, res, next);
   });
+  //change password
+  router.put('/change', function(req, res, next){
+    //check for user cedentials then update password using bcryptjs
+
+    //just need to make sure the username and password are correct and first 2 arguments
+    passport.authenticate('local', function (err, user) {
+        req.logIn(user, function() {
+          //handle change password here
+          //create let to store password change
+          let newPassword ={
+            password: req.body.new_password
+          }
+          //create hash
+          bcrypt.genSalt(10, function(err, salt) {
+              bcrypt.hash(newPassword.password, salt, function(err,hash){
+                if(err){
+                  console.log(err);
+                }
+                newPassword.password = hash;
+                //send newPassword object to change password
+                User.findOneAndUpdate({_id: user._id}, newPassword).then(function(){
+                  User.findOne({_id: user._id}).then(function(user){
+                    res.send(user);
+                  });
+                }).catch(next);
+              })
+            })
+
+        });
+    })(req, res, next);
+
+  })
 
 //update
     router.put('/user/:id', function(req, res, next){
