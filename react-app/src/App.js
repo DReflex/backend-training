@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Login, SignUp} from './login/login';
-import User from './user/user'
 import './App.css';
+// this.props.history.push("/")
 
 class App extends Component {
   constructor(props){
@@ -9,6 +9,8 @@ class App extends Component {
     this.state={
       login:Boolean,
     }
+    this.handleLogin = this.handleLogin.bind(this)
+    this.handleSignUp = this.handleSignUp.bind(this)
   }
   componentDidMount(){
     this.setState({
@@ -17,6 +19,7 @@ class App extends Component {
   }
   // login returns false or user in res,json()
   handleLogin(){
+    //would use state to keep track of the input but this will serve
     const username = document.getElementById("login-username").value
     const password = document.getElementById("login-password").value
     fetch(`/api/login`,{
@@ -28,7 +31,17 @@ class App extends Component {
       headers: {
           'Content-Type': 'application/json'
       }
-    }).then(res => console.log(res.json()) )
+    }).then(res => res.json() )
+    .then((data) =>{
+      if(!data){
+        document.getElementById("login-username").value = "";
+        document.getElementById("login-password").value = "";
+        alert("wrong username / password");
+      }else{
+        this.props.history.push("/user")
+
+      }
+    } )
 
   }
   handleSignUp(){
@@ -40,7 +53,6 @@ class App extends Component {
       console.log("passwords not match");
     }
     else{
-      console.log(password);
       fetch(`/api/user`,{
         method:"POST",
         body: JSON.stringify({
@@ -51,32 +63,20 @@ class App extends Component {
         headers: {
             'Content-Type': 'application/json'
         }
-      }).then(res => (res.status === 422)?console.log("cant create", res):console.log(res.json()) )
-    }
-  }
-  handleChangeUser(){
-    const username = document.getElementById("change-username").value.toString();
-    const password = document.getElementById("change-old-password").value.toString();
-    const new_password = document.getElementById("change-new-password").value.toString();
-    const confirm_password = document.getElementById("change-confirm-password").value
-    //make sure its not empty object
-    if(new_password !== confirm_password){
-      console.log("passwords not match");
-    }
-    else{
-      fetch(`/api/change`,{
-        method:"PUT",
-        body: JSON.stringify({
-            username: username,
-            password: password,
-            new_password: new_password
-        }),
-        headers: {
-            'Content-Type': 'application/json'
+      }).then(res => (res.status === 422)? false :res.json() )
+      .then((user) => {
+        if(user){
+          alert("succes")
+          this.props.history.push("/user")
         }
-      }).then(res => (res.status === 422)?console.log("cant create", res):console.log(res.json()) )
+        else{
+          alert("error")
+        }
+
+      })
     }
   }
+
   render() {
     return (
       <div className="App">
@@ -87,8 +87,6 @@ class App extends Component {
           })
         }
           >{this.state.login? "Sign up": "Login"}</button>
-        <h1> change password below</h1>
-        <User handleChangeUser={this.handleChangeUser} />
       </div>
     );
   }
